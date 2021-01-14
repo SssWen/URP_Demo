@@ -367,13 +367,8 @@ internal class SkinShaderGUI_Layer : ShaderGUI
         }
        
         if (EditorGUI.EndChangeCheck())
-        {
-           //foreach (var obj in blendMode.targets)
-           //     MaterialChanged((Material)obj, m_WorkflowMode);
-            //xxl todo: 美术反馈Shader (BaseShader_Layer) 编辑器有问题，切换多套UV时不能实时刷新
-            // foreach (var obj in blendMode.targets) // 这里暂时不进行Fade Transparent的切换
-                //MaterialChanged((Material)obj, m_WorkflowMode);
-                SetMaterialKeywords(material);
+        {           
+            SetMaterialKeywords(material);
         }
 
         EditorGUILayout.Space();                

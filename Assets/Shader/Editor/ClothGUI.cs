@@ -49,6 +49,15 @@ namespace UnityEditor.Rendering.Universal.ShaderGUI
 
             public static readonly string[] metallicSmoothnessChannelNames = {"Metallic Alpha", "Albedo Alpha"};
             public static readonly string[] specularSmoothnessChannelNames = {"Specular Alpha", "Albedo Alpha"};
+
+
+            public static GUIContent layer1TexText = new GUIContent("Layer1[腮红]", "");
+            public static GUIContent layer1MaskText = new GUIContent("Layer1Mask", "");
+            public static GUIContent layer1ColorText = new GUIContent("Layer1Color", "");
+            public static GUIContent layer1SmoothnessText = new GUIContent("Layer1Smoothness", "");
+            public static GUIContent layer1MetallicText = new GUIContent("Layer1Metallic", "");        
+            public static GUIContent layer1UVSetText = new GUIContent("Layer1UVSet", "");
+            public static GUIContent layer1NormalText = new GUIContent("Layer1Normal", "");
         }
 
         public struct LitProperties
@@ -66,43 +75,70 @@ namespace UnityEditor.Rendering.Universal.ShaderGUI
             public MaterialProperty bumpMapProp;
             public MaterialProperty bumpScaleProp;
             public MaterialProperty occlusionStrength;
-            public MaterialProperty occlusionMap;
+            public MaterialProperty occlusionMap; 
 
             // Advanced Props
             public MaterialProperty highlights;
             public MaterialProperty reflections;
 
+            #region AddLayer
+            // Layer
+            public MaterialProperty layer1Tex;
+            public MaterialProperty layer1Mask;
+            public MaterialProperty layer1Color;
+            public MaterialProperty layer1Smoothness;
+            public MaterialProperty layer1Metallic;
+            public MaterialProperty layer1UVSet;
+            public MaterialProperty layer1Normal;
+            public MaterialProperty layer1NormalScale;   
+        
+            #endregion
+
             public LitProperties(MaterialProperty[] properties)
             {
                 // Surface Option Props
-                workflowMode = BaseShaderGUI.FindProperty("_WorkflowMode", properties, false);
+                workflowMode = Fun_BaseShaderGUI.FindProperty("_WorkflowMode", properties, false);
                 // Surface Input Props
-                metallic = BaseShaderGUI.FindProperty("_Metallic", properties);
-                specColor = BaseShaderGUI.FindProperty("_SpecColor", properties, false);
-                metallicGlossMap = BaseShaderGUI.FindProperty("_MetallicGlossMap", properties);
-                specGlossMap = BaseShaderGUI.FindProperty("_SpecGlossMap", properties, false);
-                smoothness = BaseShaderGUI.FindProperty("_Smoothness", properties, false);
-                smoothnessMapChannel = BaseShaderGUI.FindProperty("_SmoothnessTextureChannel", properties, false);
-                bumpMapProp = BaseShaderGUI.FindProperty("_BumpMap", properties, false);
-                bumpScaleProp = BaseShaderGUI.FindProperty("_BumpScale", properties, false);
-                occlusionStrength = BaseShaderGUI.FindProperty("_OcclusionStrength", properties, false);
-                occlusionMap = BaseShaderGUI.FindProperty("_OcclusionMap", properties, false);
+                metallic = Fun_BaseShaderGUI.FindProperty("_Metallic", properties);
+                specColor = Fun_BaseShaderGUI.FindProperty("_SpecColor", properties, false);
+                metallicGlossMap = Fun_BaseShaderGUI.FindProperty("_MetallicGlossMap", properties);
+                specGlossMap = Fun_BaseShaderGUI.FindProperty("_SpecGlossMap", properties, false);
+                smoothness = Fun_BaseShaderGUI.FindProperty("_Smoothness", properties, false);
+                smoothnessMapChannel = Fun_BaseShaderGUI.FindProperty("_SmoothnessTextureChannel", properties, false);
+                bumpMapProp = Fun_BaseShaderGUI.FindProperty("_BumpMap", properties, false);
+                bumpScaleProp = Fun_BaseShaderGUI.FindProperty("_BumpScale", properties, false);
+                occlusionStrength = Fun_BaseShaderGUI.FindProperty("_OcclusionStrength", properties, false);
+                occlusionMap = Fun_BaseShaderGUI.FindProperty("_OcclusionMap", properties, false);
                 // Advanced Props
-                highlights = BaseShaderGUI.FindProperty("_SpecularHighlights", properties, false);
-                reflections = BaseShaderGUI.FindProperty("_EnvironmentReflections", properties, false);
+                highlights = Fun_BaseShaderGUI.FindProperty("_SpecularHighlights", properties, false);
+                reflections = Fun_BaseShaderGUI.FindProperty("_EnvironmentReflections", properties, false);
+
+                // Cloth Layer 
+                layer1Tex = Fun_BaseShaderGUI.FindProperty("_Layer1Tex", properties, false);
+                layer1Mask = Fun_BaseShaderGUI.FindProperty("_Layer1Mask", properties, false);
+                layer1UVSet = Fun_BaseShaderGUI.FindProperty("_Layer1UVSet", properties, false);
+                layer1Normal = Fun_BaseShaderGUI.FindProperty("_Layer1Normal", properties, false);
+                layer1NormalScale = Fun_BaseShaderGUI.FindProperty("_Layer1NormalScale", properties, false);
+                layer1Color = Fun_BaseShaderGUI.FindProperty("_Layer1Color", properties, false);
+                layer1Smoothness = Fun_BaseShaderGUI.FindProperty("_Layer1Smoothness", properties, false);
+                layer1Metallic = Fun_BaseShaderGUI.FindProperty("_Layer1Metallic", properties, false);
+
+
             }
         }
 
         public static void Inputs(LitProperties properties, MaterialEditor materialEditor, Material material)
         {
             DoMetallicSpecularArea(properties, materialEditor, material);
-            BaseShaderGUI.DrawNormalArea(materialEditor, properties.bumpMapProp, properties.bumpScaleProp);
+            Fun_BaseShaderGUI.DrawNormalArea(materialEditor, properties.bumpMapProp, properties.bumpScaleProp);
 
             if (properties.occlusionMap != null)
             {
                 materialEditor.TexturePropertySingleLine(Styles.occlusionText, properties.occlusionMap,
                     properties.occlusionMap.textureValue != null ? properties.occlusionStrength : null);
             }
+
+            DoLayerArea(properties, materialEditor, material);
         }
 
         public static void DoMetallicSpecularArea(LitProperties properties, MaterialEditor materialEditor, Material material)
@@ -121,7 +157,7 @@ namespace UnityEditor.Rendering.Universal.ShaderGUI
             {
                 hasGlossMap = properties.specGlossMap.textureValue != null;
                 smoothnessChannelNames = Styles.specularSmoothnessChannelNames;
-                BaseShaderGUI.TextureColorProps(materialEditor, Styles.specularMapText, properties.specGlossMap,
+                Fun_BaseShaderGUI.TextureColorProps(materialEditor, Styles.specularMapText, properties.specGlossMap,
                     hasGlossMap ? null : properties.specColor);
             }
             EditorGUI.indentLevel++;
@@ -131,8 +167,8 @@ namespace UnityEditor.Rendering.Universal.ShaderGUI
 
         public static void DoSmoothness(LitProperties properties, Material material, string[] smoothnessChannelNames)
         {
-            var opaque = ((BaseShaderGUI.SurfaceType) material.GetFloat("_Surface") ==
-                          BaseShaderGUI.SurfaceType.Opaque);
+            var opaque = ((Fun_BaseShaderGUI.SurfaceType) material.GetFloat("_Surface") ==
+                          Fun_BaseShaderGUI.SurfaceType.Opaque);
             EditorGUI.indentLevel++;
             EditorGUI.BeginChangeCheck();
             EditorGUI.showMixedValue = properties.smoothness.hasMixedValue;
@@ -177,8 +213,8 @@ namespace UnityEditor.Rendering.Universal.ShaderGUI
             // (MaterialProperty value might come from renderer material property block)
             var hasGlossMap = false;
             var isSpecularWorkFlow = false;
-            var opaque = ((BaseShaderGUI.SurfaceType) material.GetFloat("_Surface") ==
-                          BaseShaderGUI.SurfaceType.Opaque);
+            var opaque = ((Fun_BaseShaderGUI.SurfaceType) material.GetFloat("_Surface") ==
+                          Fun_BaseShaderGUI.SurfaceType.Opaque);
             if (material.HasProperty("_WorkflowMode"))
             {
                 isSpecularWorkFlow = (WorkflowMode) material.GetFloat("_WorkflowMode") == WorkflowMode.Specular;
@@ -209,7 +245,59 @@ namespace UnityEditor.Rendering.Universal.ShaderGUI
             {
                 CoreUtils.SetKeyword(material, "_SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A",
                     GetSmoothnessMapChannel(material) == SmoothnessMapChannel.AlbedoAlpha && opaque);
+            }            
+           SetClothMaterialKeywords(material);
+        }
+
+        // 自定义Keywords
+        public static void SetClothMaterialKeywords(Material material)
+        {
+                if (material.HasProperty("_Layer1Tex"))
+                CoreUtils.SetKeyword(material, "_LAYER_1_TEX", material.GetTexture("_Layer1Tex"));
+
+                if (material.HasProperty("_Layer1Normal"))
+                CoreUtils.SetKeyword(material, "_LAYER_1_NORMAL", material.GetTexture("_Layer1Normal"));
+
+                if (material.HasProperty("_Layer1Mask"))
+                CoreUtils.SetKeyword(material, "_LAYER_1_MASK", material.GetTexture("_Layer1Mask"));
+                
+                // key for layer uv set
+                CoreUtils.SetKeyword(material, "_Layer1UVSet_0", material.GetFloat("_Layer1UVSet") == 0);
+                CoreUtils.SetKeyword(material, "_Layer1UVSet_1", material.GetFloat("_Layer1UVSet") == 1);
+                CoreUtils.SetKeyword(material, "_Layer1UVSet_2", material.GetFloat("_Layer1UVSet") == 2);
+                CoreUtils.SetKeyword(material, "_Layer1UVSet_3", material.GetFloat("_Layer1UVSet") == 3);
+
+        }
+        
+        // 自定义布局
+        static void DoLayerArea(LitProperties properties, MaterialEditor materialEditor, Material material)
+        {            
+            materialEditor.TexturePropertySingleLine(Styles.layer1TexText, properties.layer1Tex);    
+            if (material.GetTexture("_Layer1Tex"))
+            {    
+                TextureLayout(materialEditor, Styles.layer1NormalText, properties.layer1Normal, properties.layer1NormalScale); 
+                TextureLayout(materialEditor, Styles.layer1MaskText, properties.layer1Mask);  
+                materialEditor.TextureScaleOffsetProperty(properties.layer1Tex);
+                materialEditor.ShaderProperty(properties.layer1Color, Styles.layer1ColorText.text, 2);
+                materialEditor.ShaderProperty(properties.layer1Smoothness, Styles.layer1SmoothnessText.text, 2);
+                materialEditor.ShaderProperty(properties.layer1Metallic, Styles.layer1MetallicText.text, 2);            
+                materialEditor.ShaderProperty(properties.layer1UVSet, Styles.layer1UVSetText.text, 2);                    
             }
+            else
+            {        
+                material.SetTexture("_Layer1Normal", null);
+                material.SetTexture("_Layer1Mask", null);            
+            }
+        }
+        static void TextureLayout(MaterialEditor materialEditor,GUIContent content, MaterialProperty propert1, MaterialProperty propert2 = null)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(20);
+            if (propert2 != null)
+                materialEditor.TexturePropertySingleLine(content, propert1, propert2);
+            else
+                materialEditor.TexturePropertySingleLine(content, propert1);
+            GUILayout.EndHorizontal();
         }
     }
 }

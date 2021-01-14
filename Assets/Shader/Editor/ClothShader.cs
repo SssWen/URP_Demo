@@ -59,6 +59,8 @@ namespace UnityEditor.Rendering.Universal.ShaderGUI
             ClothGUI.Inputs(litProperties, materialEditor, material);
             DrawEmissionProperties(material, true);
             DrawTileOffset(materialEditor, baseMapProp);
+
+            // 这里进行绘制
         }
 
         // material main advanced options
