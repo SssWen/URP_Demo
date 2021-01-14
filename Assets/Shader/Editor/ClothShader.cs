@@ -8,14 +8,14 @@ namespace UnityEditor.Rendering.Universal.ShaderGUI
     internal class ClothShader : Fun_BaseShaderGUI
     {
         // Properties
-        private LitGUI.LitProperties litProperties;
+        private ClothGUI.LitProperties litProperties;
 
 
         // collect properties from the material properties
         public override void FindProperties(MaterialProperty[] properties)
         {
             base.FindProperties(properties);
-            litProperties = new LitGUI.LitProperties(properties);
+            litProperties = new ClothGUI.LitProperties(properties);
             
 
         }
@@ -26,7 +26,7 @@ namespace UnityEditor.Rendering.Universal.ShaderGUI
             if (material == null)
                 throw new ArgumentNullException("material");
 
-            SetMaterialKeywords(material, LitGUI.SetMaterialKeywords);
+            SetMaterialKeywords(material, ClothGUI.SetMaterialKeywords);
         }
 
         // material main surface options
@@ -42,7 +42,7 @@ namespace UnityEditor.Rendering.Universal.ShaderGUI
             EditorGUI.BeginChangeCheck();
             if (litProperties.workflowMode != null)
             {
-                DoPopup(LitGUI.Styles.workflowModeText, litProperties.workflowMode, Enum.GetNames(typeof(LitGUI.WorkflowMode)));
+                DoPopup(ClothGUI.Styles.workflowModeText, litProperties.workflowMode, Enum.GetNames(typeof(ClothGUI.WorkflowMode)));
             }
             if (EditorGUI.EndChangeCheck())
             {
@@ -56,7 +56,7 @@ namespace UnityEditor.Rendering.Universal.ShaderGUI
         public override void DrawSurfaceInputs(Material material)
         {
             base.DrawSurfaceInputs(material);
-            LitGUI.Inputs(litProperties, materialEditor, material);
+            ClothGUI.Inputs(litProperties, materialEditor, material);
             DrawEmissionProperties(material, true);
             DrawTileOffset(materialEditor, baseMapProp);
         }
@@ -67,8 +67,8 @@ namespace UnityEditor.Rendering.Universal.ShaderGUI
             if (litProperties.reflections != null && litProperties.highlights != null)
             {
                 EditorGUI.BeginChangeCheck();
-                materialEditor.ShaderProperty(litProperties.highlights, LitGUI.Styles.highlightsText);
-                materialEditor.ShaderProperty(litProperties.reflections, LitGUI.Styles.reflectionsText);
+                materialEditor.ShaderProperty(litProperties.highlights, ClothGUI.Styles.highlightsText);
+                materialEditor.ShaderProperty(litProperties.reflections, ClothGUI.Styles.reflectionsText);
                 if(EditorGUI.EndChangeCheck())
                 {
                     MaterialChanged(material);
@@ -117,14 +117,14 @@ namespace UnityEditor.Rendering.Universal.ShaderGUI
 
             if (oldShader.name.Equals("Standard (Specular setup)"))
             {
-                material.SetFloat("_WorkflowMode", (float)LitGUI.WorkflowMode.Specular);
+                material.SetFloat("_WorkflowMode", (float)ClothGUI.WorkflowMode.Specular);
                 Texture texture = material.GetTexture("_SpecGlossMap");
                 if (texture != null)
                     material.SetTexture("_MetallicSpecGlossMap", texture);
             }
             else
             {
-                material.SetFloat("_WorkflowMode", (float)LitGUI.WorkflowMode.Metallic);
+                material.SetFloat("_WorkflowMode", (float)ClothGUI.WorkflowMode.Metallic);
                 Texture texture = material.GetTexture("_MetallicGlossMap");
                 if (texture != null)
                     material.SetTexture("_MetallicSpecGlossMap", texture);
