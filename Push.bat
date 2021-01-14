@@ -3,7 +3,7 @@ git add .
 git stash
 git pull
 git stash pop
-git commit -m "剥离Unity Editor代码." -a
+git commit -m "Update Cloth UPR Demo." -a
 git push
 
 start /b
