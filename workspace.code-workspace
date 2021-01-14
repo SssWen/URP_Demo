@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "..\\Package\\com.unity.render-pipelines.core@7.3.1"
+		},
+		{
+			"path": "..\\Package\\com.unity.render-pipelines.universal@7.3.1"
+		}
+	],
+	"settings": {}
+}
