@@ -230,7 +230,7 @@ internal class SkinShaderGUI_Layer : ShaderGUI
         extraShadeRange = FindProperty("_ExtraShadeRange", props);
 
         // color
-        _BaseColor = FindProperty("_BaseColor", props);
+        _BaseColor = FindProperty("_BaseColorT", props);
         _ShadowColor = FindProperty("_ShadowColor", props);
         _ShadeColor = FindProperty("_ShadeColor", props);
         _SpecularColor = FindProperty("_SpecularColor", props);

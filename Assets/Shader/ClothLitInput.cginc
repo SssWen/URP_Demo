@@ -5,6 +5,9 @@
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/CommonMaterial.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/SurfaceInput.hlsl"
 
+// properties defined inside a concrete memory buffere instead of at the global level.
+// constant buffer aren't surpported on all platforms eg:OpenGLES2.0
+// use cbuffer_start macros instead.
 CBUFFER_START(UnityPerMaterial)
 float4 _BaseMap_ST;
 half4 _BaseColor;

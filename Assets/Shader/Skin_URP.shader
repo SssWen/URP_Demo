@@ -3,7 +3,7 @@ Shader "Custom/Skin_URP"
     Properties
     {
         _MainTexT ("Albedo", 2D) = "white" {}        
-        _BaseColor ("_BaseColor",Color) = (1,1,1,1)   
+        _BaseColorT ("_BaseColorT",Color) = (1,1,1,1)   
         _ShadowColor ("ShadowColor",Color) = (0.47,0.31,0.40,1)
         _ShadeColor ("ShadeColor",Color) = (0.91,0.636,0.636,1)
         _SpecularColor ("高光颜色",Color) = (1,1,1,1)        
@@ -154,8 +154,12 @@ Shader "Custom/Skin_URP"
                         
             #define UNITY_INV_PI 1/PI
 
-            #include "HLSLSupport.cginc"           
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"                                               
+            // // #include "HLSLSupport.cginc" 
+            // #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            // #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/CommonMaterial.hlsl"
+            // #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/SurfaceInput.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"            
+            
             struct appdata
             {
                 float4 vertex  : POSITION;                
@@ -178,16 +182,10 @@ Shader "Custom/Skin_URP"
 			    float3 shlight: TEXCOORD4;
 			    float4 detailUV: TEXCOORD5;
 			    float4 tangentToWorldAndPackedData[3] : TEXCOORD6;			    
-            };
-
-            TEXTURE2D(_MainTexT);    SAMPLER(sampler_MainTexT);                        
-            TEXTURE2D(_ShadowMaskSkin);    SAMPLER(sampler_ShadowMaskSkin);            
-            TEXTURE2D(_NormalMap);    SAMPLER(sampler_NormalMap);                                    
-            TEXTURE2D(_LUTTex);    SAMPLER(sampler_LUTTex);            
-            TEXTURE2D(_SpecularTex);    SAMPLER(sampler_SpecularTex);            
-
+            };        
+          
             float _NormalMapScale;
-            float4 _BaseColor;
+            float4 _BaseColorT;
             float4 _ShadowColor;
             float4 _ShadeColor;
             float4 _NN4AmbientTint;
@@ -208,11 +206,12 @@ Shader "Custom/Skin_URP"
  // --------------- Layer ----------                
                 // layer transform and scale             
                 // layer texture
+                // TOD0: 优化公用采样器
                 #if _LAYER_1_TEX 
-                    TEXTURE2D(_Layer1Tex);    SAMPLER(sampler_Layer1Tex);
+                    TEXTURE2D(_Layer1Tex);    SAMPLER(sampler_Layer1Tex);                    
                     // sampler2D _Layer1Tex; 
                     half4 _Layer1Tex_ST;
-                    fixed4 _Layer1Color;
+                    real4 _Layer1Color;
                     half _Layer1Smoothness;
                     half _Layer1Metallic;
                 #endif
@@ -220,7 +219,7 @@ Shader "Custom/Skin_URP"
                 #if _LAYER_2_TEX                     
                     TEXTURE2D(_Layer2Tex);    SAMPLER(sampler_Layer2Tex);
                     half4 _Layer2Tex_ST;
-                    fixed4 _Layer2Color;
+                    real4 _Layer2Color;
                     half _Layer2Smoothness;
                     half _Layer2Metallic;
                 #endif
@@ -228,7 +227,7 @@ Shader "Custom/Skin_URP"
                 #if _LAYER_3_TEX                     
                     TEXTURE2D(_Layer3Tex);    SAMPLER(sampler_Layer3Tex);
                     half4 _Layer3Tex_ST;                  
-                    fixed4 _Layer3Color;
+                    real4 _Layer3Color;
                     half _Layer3Smoothness;
                     half _Layer3Metallic;
                 #endif
@@ -236,7 +235,7 @@ Shader "Custom/Skin_URP"
                 #if _LAYER_4_TEX 
                     TEXTURE2D(_Layer4Tex);    SAMPLER(sampler_Layer4Tex);
                     half4 _Layer4Tex_ST;                  
-                    fixed4 _Layer4Color;
+                    real4 _Layer4Color;
                     half _Layer4Smoothness;
                     half _Layer4Metallic;
                 #endif
@@ -244,7 +243,7 @@ Shader "Custom/Skin_URP"
                 #if _LAYER_5_TEX 
                     TEXTURE2D(_Layer5Tex);    SAMPLER(sampler_Layer5Tex);
                     half4 _Layer5Tex_ST;                  
-                    fixed4 _Layer5Color;
+                    real4 _Layer5Color;
                     half _Layer5Smoothness;
                     half _Layer5Metallic;
                 #endif
@@ -252,7 +251,7 @@ Shader "Custom/Skin_URP"
                 #if _LAYER_6_TEX 
                     TEXTURE2D(_Layer6Tex);    SAMPLER(sampler_Layer6Tex);
                     half4 _Layer6Tex_ST;
-                    fixed4 _Layer6Color;
+                    real4 _Layer6Color;
                     half _Layer6Smoothness;
                     half _Layer6Metallic;
                 #endif
@@ -260,7 +259,7 @@ Shader "Custom/Skin_URP"
                 #if _LAYER_7_TEX 
                     TEXTURE2D(_Layer7Tex);    SAMPLER(sampler_Layer7Tex);
                     half4 _Layer7Tex_ST;
-                    fixed4 _Layer7Color;
+                    real4 _Layer7Color;
                     half _Layer7Smoothness;
                     half _Layer7Metallic;
                 #endif
@@ -325,8 +324,14 @@ Shader "Custom/Skin_URP"
                 #endif
                 
  // --------------- Layer ----------
+
             #include "Tools_URP.cginc"
 
+            TEXTURE2D_SAMPLER(_MainTexT);
+            TEXTURE2D_SAMPLER(_ShadowMaskSkin);
+            TEXTURE2D_SAMPLER(_NormalMap);
+            TEXTURE2D_SAMPLER(_LUTTex);
+            TEXTURE2D_SAMPLER(_SpecularTex);
 
             half3 FresnelLerpNN (half3 F0, half cosA)
             {
@@ -346,7 +351,7 @@ Shader "Custom/Skin_URP"
             v2f vert (appdata v)
             {
                 v2f o;                                                                                               
-                float4 clipPos = TransformObjectToHClip(v.vertex);                                
+                float4 clipPos = TransformObjectToHClip(v.vertex.xyz);                                
                 // clipPos.z = -clipPos.z * _DeptheBias*0.1 + clipPos.z;                
                 o.vertex = clipPos;
                 o.uv.xy = v.uv0;                
@@ -379,9 +384,9 @@ Shader "Custom/Skin_URP"
             }            
             float4 frag (v2f i) : SV_Target
             {        
-                float3 baseColor = SAMPLE_TEXTURE2D(_MainTexT, sampler_MainTexT,i.uv);
-                float3 albedoColor = baseColor*baseColor*_BaseColor;
-                fixed4 outColor = fixed4(albedoColor,1);
+                float3 baseColor = SAMPLE_TEXTURE2D(_MainTexT, sampler_MainTexT,i.uv).xyz;
+                float3 albedoColor = baseColor*baseColor*_BaseColorT;
+                real4 outColor = real4(albedoColor,1);
                 float3 worldPos = float3(i.TtoW0.w, i.TtoW1.w, i.TtoW2.w);                				
                 float3 worldViewDir = normalize(_WorldSpaceCameraPos.xyz - worldPos);
                 float3 _normal_ = SAMPLE_TEXTURE2D(_NormalMap, sampler_NormalMap,i.uv.xy);
@@ -419,12 +424,13 @@ Shader "Custom/Skin_URP"
                 float3 SpecularColor = D*F*_NN4Char_LightColor1.xyz + IndirectSpecular;
                 SpecularColor = SpecularColor *_SpecularColor;                
                 // 阴影计算
-                float ndotl_1 = dot(worldNormal,_NN4Char_LightDir1);
-                float ndotl_2 = dot(worldNormal,_NN4Char_LightDir2);
+                float ndotl_1 = dot(worldNormal,_NN4Char_LightDir1.xyz);
+                float ndotl_2 = dot(worldNormal,_NN4Char_LightDir2.xyz);
 
                 ndotl_2 = (ndotl_2+0.5)*0.66666669; // 范围控制在 [-1/3,1]，  lerp()
                 ndotl_2 = max(ndotl_2,0); // 控制在 [0,1]
                 ndotl_2 = pow(ndotl_2,4); // 4次计算，减少漫反射
+
                 
                 float3 _LightColor2 = ndotl_2 * _NN4Char_LightColor2 * albedoColor;
                 _LightColor2 = _LightColor2 * albedoColor;                
@@ -449,7 +455,6 @@ Shader "Custom/Skin_URP"
                 _FinalShadowColor = albedoColor * _FinalShadowColor + _LightColor2;
             
                 // 厚度图
-           
                 float ndotVRange =  min(ndotv / _ExtraShadeRange,1) - 1;
                 ndotVRange = ndotVRange * funcTex.z + 1; 
                 float3 _lerpShadeColor = lerp(_ShadeColor,1,ndotVRange);

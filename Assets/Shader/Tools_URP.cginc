@@ -1,6 +1,11 @@
 #ifndef FUN_SKINTOOL_URP_INCLUDED
 #define FUN_SKINTOOL_URP_INCLUDED
-#define SAMPLE_TEXTURE2D_Default(textureName, uv)  SAMPLE_TEXTURE2D(textureName,sampler####textureName,uv)
+// #define TEXTURE2D_SAMPLER(tex) Texture2D tex; SamplerState sampler##tex
+#define TEXTURE2D_SAMPLER(tex) TEXTURE2D(tex); SAMPLER(sampler##tex);
+#define SAMPLE_TEXTURE2D_Default(textureName, uv)  SAMPLE_TEXTURE2D(textureName,sampler##textureName,uv)
+// #define SAMPLE_TEXTURE2D_Default(textureName, uv)  UNITY_SAMPLE_TEX2D(textureName,uv)
+
+// #define UNITY_SAMPLE_TEX2D(tex,coord) tex.Sample (sampler##tex,coord)
 struct FragmentCommonData
 {
     half3 diffColor, specColor;
@@ -283,7 +288,7 @@ half3 BlendNormalTS(half3 normalTangent, half3 detailNormalTangent, half mask){
 }
 
 // 妆容混合颜色, 应该不能直接覆盖
-fixed4 BlendColor_Layer(fixed4 srcCol, fixed4 outCol) {
+real4 BlendColor_Layer(real4 srcCol, real4 outCol) {
 
 	// #if _Layer2_Blend_Normal
 		// outCol.rgb = srcCol.rgb * srcCol.a + outCol.rgb * (1 - srcCol.a);
@@ -295,7 +300,7 @@ fixed4 BlendColor_Layer(fixed4 srcCol, fixed4 outCol) {
 	return outCol;
 }
 // 这里设置worldNormal的值
-inline FragmentCommonData MetallicSetup_FunDream (half4 i_tex, half4 detailUV, float4 tangentToWorld[3], fixed4 outCol)
+inline FragmentCommonData MetallicSetup_FunDream (half4 i_tex, half4 detailUV, float4 tangentToWorld[3], real4 outCol)
 {
 	half2 uv = i_tex.xy;    
     // half2 metallicGloss =  0; // MetallicGloss_FunDream(uv); 获取当前metallicGloss
@@ -304,7 +309,7 @@ inline FragmentCommonData MetallicSetup_FunDream (half4 i_tex, half4 detailUV, f
     half oneMinusReflectivity;
     half3 specColor;
 
-	// fixed4 mainTexCol = SAMPLE_TEXTURE2D_Default (_MainTexT, i_tex.xy);
+	// real4 mainTexCol = SAMPLE_TEXTURE2D_Default (_MainTexT, i_tex.xy);
 
     // 切线空间Normal,法线不变
 	half3 outNormalTS = half3(0, 0, 1); 
@@ -312,8 +317,8 @@ inline FragmentCommonData MetallicSetup_FunDream (half4 i_tex, half4 detailUV, f
 		outNormalTS = UnpackScaleNormal(SAMPLE_TEXTURE2D_Default (_NormalMap, i_tex.xy), _NormalMapScale);
 	#endif
 
-	// fixed4 outCol = mainTexCol * _Color;
-	// fixed4 outCol = mainTexCol;
+	// real4 outCol = mainTexCol * _Color;
+	// real4 outCol = mainTexCol;
 	half outMetallic = 0; // 默认金属度
 	half outSmoothness = 0;
 
