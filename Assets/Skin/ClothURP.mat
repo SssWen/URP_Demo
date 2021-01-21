@@ -7,15 +7,16 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Skin3
-  m_Shader: {fileID: 4800000, guid: 615bff95705947c43abfa14e6e668733, type: 3}
-  m_ShaderKeywords: _LAYER_0_NORMAL _LAYER_1_TEX _Layer0UVSet_0 _Layer1UVSet_0 _Layer2UVSet_0
-    _Layer3UVSet_0 _Layer4UVSet_0 _Layer5UVSet_0 _Layer6UVSet_0
+  m_Name: ClothURP
+  m_Shader: {fileID: 4800000, guid: d9debafde08358440887ec21b8a69cb9, type: 3}
+  m_ShaderKeywords: _LAYER_2_TEX _Layer1UVSet_0 _Layer2UVSet_0 _Layer3UVSet_0 _Layer4UVSet_0
+    _Layer5UVSet_0 _Layer6UVSet_0 _Layer7UVSet_0
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2000
-  stringTagMap: {}
+  m_CustomRenderQueue: 2050
+  stringTagMap:
+    RenderType: Opaque
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
@@ -32,12 +33,8 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _LUTTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _Layer0Normal:
-        m_Texture: {fileID: 2800000, guid: cccc116a6334dc1428687697c5a11d58, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Layer1Mask:
@@ -49,7 +46,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Layer1Tex:
-        m_Texture: {fileID: 2800000, guid: 108e201829ab4214383a5467adbc0086, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Layer2Mask:
@@ -61,7 +58,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Layer2Tex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: d1f1048909d55cd4fa1126ab998f617e, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Layer3Mask:
@@ -125,18 +122,10 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 10305, guid: 0000000000000000f000000000000000, type: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MainTexT:
-        m_Texture: {fileID: 2800000, guid: d1f1048909d55cd4fa1126ab998f617e, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MetallicGlossMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _NormalMap:
+    - _MetallicGlossMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -148,27 +137,17 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _SpecularTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     m_Floats:
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1
     - _Cull: 2
     - _Cutoff: 0.5
-    - _DepthStrength: 1
-    - _DeptheBias: 1
     - _DstBlend: 0
     - _EnvironmentReflections: 1
-    - _ExtraShadeRange: 0.6
-    - _Fresnel: 0.124
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _Layer0NormalScale: 1
-    - _Layer0UVSet: 0
     - _Layer1Metallic: 0
     - _Layer1NormalScale: 1
     - _Layer1Smoothness: 0
@@ -198,41 +177,29 @@ Material:
     - _Layer7Smoothness: 0
     - _Layer7UVSet: 0
     - _Metallic: 0
-    - _NormalMapScale: 0.86
     - _OcclusionStrength: 1
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _ShadowIntensity: 1.48
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
-    - _Strength: 1
     - _Surface: 0
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _BaseColorT: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _Layer1Color: {r: 1, g: 0, b: 0, a: 1}
+    - _Layer1Color: {r: 1, g: 1, b: 1, a: 1}
     - _Layer2Color: {r: 1, g: 1, b: 1, a: 1}
     - _Layer3Color: {r: 1, g: 1, b: 1, a: 1}
     - _Layer4Color: {r: 1, g: 1, b: 1, a: 1}
     - _Layer5Color: {r: 1, g: 1, b: 1, a: 1}
     - _Layer6Color: {r: 1, g: 1, b: 1, a: 1}
     - _Layer7Color: {r: 1, g: 1, b: 1, a: 1}
-    - _NN4AmbientTint: {r: 1, g: 1, b: 1, a: 1}
-    - _NN4Char_LightColor1: {r: 0.31, g: 0.31, b: 0.31, a: 1}
-    - _NN4Char_LightColor2: {r: 5.41, g: 5.41, b: 5.41, a: 1}
-    - _NN4Char_LightDir1: {r: -0.27, g: 0.45, b: 0.85, a: 1}
-    - _NN4Char_LightDir2: {r: 0.72, g: 0.369, b: -0.582, a: 1}
-    - _ShadeColor: {r: 0.91, g: 0.636, b: 0.636, a: 1}
-    - _ShadowColor: {r: 0.47, g: 0.31, b: 0.4, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
-    - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
---- !u!114 &7209434213609111130
+--- !u!114 &3399913509939846935
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}

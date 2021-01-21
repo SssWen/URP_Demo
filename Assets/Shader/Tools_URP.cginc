@@ -1,11 +1,9 @@
 #ifndef FUN_SKINTOOL_URP_INCLUDED
 #define FUN_SKINTOOL_URP_INCLUDED
-// #define TEXTURE2D_SAMPLER(tex) Texture2D tex; SamplerState sampler##tex
+
 #define TEXTURE2D_SAMPLER(tex) TEXTURE2D(tex); SAMPLER(sampler##tex);
 #define SAMPLE_TEXTURE2D_Default(textureName, uv)  SAMPLE_TEXTURE2D(textureName,sampler##textureName,uv)
-// #define SAMPLE_TEXTURE2D_Default(textureName, uv)  UNITY_SAMPLE_TEX2D(textureName,uv)
 
-// #define UNITY_SAMPLE_TEX2D(tex,coord) tex.Sample (sampler##tex,coord)
 struct FragmentCommonData
 {
     half3 diffColor, specColor;
@@ -18,24 +16,14 @@ struct FragmentCommonData
     float3 posWorld;
 
 
-     half3 tangentSpaceNormal;
+    half3 tangentSpaceNormal;
 // #if UNITY_STANDARD_SIMPLE
 //     half3 tangentSpaceNormal;
 // #endif
 };
 
 half2 GetLayer0Texcoord(half4 i_tex, half4 detailUV){
-	#if _Layer0UVSet_0
-		return i_tex.xy;
-	#elif _Layer0UVSet_1
-		return i_tex.zw;
-	#elif (_Layer0UVSet_2 )
-		return detailUV.xy;
-	#elif (_Layer0UVSet_3 )
-		return detailUV.zw;
-	#else 
-		return i_tex.xy;
-	#endif
+	return i_tex.xy;
 }
 half2 GetLayer1Texcoord(half4 i_tex, half4 detailUV){
 	#if _Layer1UVSet_0

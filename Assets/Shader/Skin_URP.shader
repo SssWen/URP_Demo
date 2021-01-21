@@ -1,4 +1,4 @@
-Shader "Custom/Skin_URP"
+Shader "CustomURP/Skin_URP"
 {
     Properties
     {
@@ -39,8 +39,7 @@ Shader "Custom/Skin_URP"
 		_Layer1Color("Layer1Color", Color) = (1,1,1,1)
 		_Layer1Smoothness("Layer1Smoothness", Range(-1, 1)) = 0 
 		_Layer1Metallic("Layer1Metallic", Range(-1, 1)) = 0
-		[Enum(UV0,0, UV1,1, UV2,2, UV3,3)] _Layer1UVSet("Layer1UVSet", float) = 0
-		//[Enum(Normal,0, Multiply,1)] _Layer1BlendMode("BlendMode", float) = 0
+		[Enum(UV0,0, UV1,1, UV2,2, UV3,3)] _Layer1UVSet("Layer1UVSet", float) = 0		
 
 
 		_Layer2Tex("Layer2Tex", 2D) = "black"{}
@@ -153,11 +152,6 @@ Shader "Custom/Skin_URP"
             #pragma fragment frag                    
                         
             #define UNITY_INV_PI 1/PI
-
-            // // #include "HLSLSupport.cginc" 
-            // #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-            // #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/CommonMaterial.hlsl"
-            // #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/SurfaceInput.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"            
             
             struct appdata
@@ -204,7 +198,7 @@ Shader "Custom/Skin_URP"
             
 
  // --------------- Layer ----------                
-                // layer transform and scale             
+                // layer transform and scale,use #if instead of #ifdef             
                 // layer texture
                 // TOD0: 优化公用采样器
                 #if _LAYER_1_TEX 
